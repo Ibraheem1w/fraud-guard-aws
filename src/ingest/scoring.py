@@ -49,7 +49,8 @@ def score_transaction(txn):
     flags = {
         "risky_type": int(txn["type"] in RISKY_TYPES),
         "large_amount": int(amount >= LARGE_AMOUNT),
-        "orig_mismatch": int(abs(expected_new - new_balance) > BALANCE_TOLERANCE),
+        # in PaySim, fraud almost always has balances that add up and most normal rows do not
+        "balance_matches": int(abs(expected_new - new_balance) <= BALANCE_TOLERANCE),
         "drained_sender": int(old_balance > 0 and new_balance == 0),
     }
     flags["risk_score"] = sum(flags.values())

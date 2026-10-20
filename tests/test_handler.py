@@ -47,7 +47,7 @@ def test_clean_transaction_is_stored_and_not_alerted(aws):
     result = handler_module.handler(event(CLEAN), None)
     body = json.loads(result["body"])
     assert result["statusCode"] == 201
-    assert body["risk_score"] == 0 and body["flagged"] is False
+    assert body["risk_score"] == 1 and body["flagged"] is False
     assert table.get_item(Key={"txn_id": "t-100"})["Item"]["type"] == "PAYMENT"
     firehose.put_record.assert_called_once()
     sns.publish.assert_not_called()
@@ -58,7 +58,7 @@ def test_fraud_is_flagged_and_alerted(aws):
     result = handler_module.handler(event(FRAUD), None)
     body = json.loads(result["body"])
     assert result["statusCode"] == 201
-    assert body["risk_score"] == 3 and body["flagged"] is True and body["alerted"] is True
+    assert body["risk_score"] == 4 and body["flagged"] is True and body["alerted"] is True
     sns.publish.assert_called_once()
     assert table.get_item(Key={"txn_id": "t-200"})["Item"]["flagged"] is True
 

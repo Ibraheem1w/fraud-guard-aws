@@ -30,7 +30,7 @@ LAKE_COLUMNS = [
     ("old_balance_org", "double"), ("new_balance_orig", "double"),
     ("flagged", "boolean"), ("received_at", "string"),
     ("risky_type", "int"), ("large_amount", "int"),
-    ("orig_mismatch", "int"), ("drained_sender", "int"), ("risk_score", "int"),
+    ("balance_matches", "int"), ("drained_sender", "int"), ("risk_score", "int"),
 ]
 
 

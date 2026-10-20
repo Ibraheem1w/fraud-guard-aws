@@ -34,18 +34,19 @@ if __name__ == "__main__":
     clean, cash_in, drain, fraud, bad = SAMPLES
 
     _, status, body = send(clean)
-    check("clean payment is stored with score 0", status == 201 and body["risk_score"] == 0)
+    check("clean payment is stored with score 1 and is not flagged",
+          status == 201 and body["risk_score"] == 1 and not body["flagged"])
 
     _, status, body = send(cash_in)
-    check("cash in that adds to the balance scores 0", status == 201 and body["risk_score"] == 0)
+    check("cash in that adds to the balance scores 1", status == 201 and body["risk_score"] == 1)
 
     _, status, body = send(drain)
-    check("small transfer that empties the account scores 2 and is not flagged",
-          status == 201 and body["risk_score"] == 2 and not body["flagged"])
+    check("small transfer that empties the account scores 3 and is flagged",
+          status == 201 and body["risk_score"] == 3 and body["flagged"])
 
     fraud_payload, status, body = send(fraud)
-    check("large cash out that empties the account scores 3, is flagged and alerts",
-          status == 201 and body["risk_score"] == 3 and body["flagged"] and body["alerted"])
+    check("large cash out that empties the account scores 4, is flagged and alerts",
+          status == 201 and body["risk_score"] == 4 and body["flagged"] and body["alerted"])
 
     _, status, _ = send(bad)
     check("negative amount is rejected with 400", status == 400)
@@ -59,6 +60,6 @@ if __name__ == "__main__":
 
     table = boto3.resource("dynamodb").Table(table_name)
     item = table.get_item(Key={"txn_id": fraud_payload["txn_id"]}).get("Item")
-    check("the flagged transaction is in DynamoDB with score 3", item is not None and item["risk_score"] == 3)
+    check("the flagged transaction is in DynamoDB with score 4", item is not None and item["risk_score"] == 4)
 
     print("\nall checks passed")

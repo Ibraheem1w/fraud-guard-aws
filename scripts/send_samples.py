@@ -9,16 +9,16 @@ import urllib.error
 import urllib.request
 
 SAMPLES = [
-    # clean payment, score 0
+    # clean payment, score 1 (balances add up), not flagged
     {"txn_id": "demo-clean-001", "type": "PAYMENT", "amount": 42.50, "nameOrig": "C100", "nameDest": "M200",
      "oldbalanceOrg": 800.00, "newbalanceOrig": 757.50},
-    # cash in that adds to the balance, still score 0 (the bug the SQL project fixed)
+    # cash in that adds to the balance, score 1 (the bug the SQL project fixed)
     {"txn_id": "demo-cashin-001", "type": "CASH_IN", "amount": 100, "nameOrig": "C101", "nameDest": "C201",
      "oldbalanceOrg": 50, "newbalanceOrig": 150},
-    # small transfer that empties the account, score 2
+    # small transfer that empties the account, score 3, triggers an alert
     {"txn_id": "demo-drain-001", "type": "TRANSFER", "amount": 900, "nameOrig": "C102", "nameDest": "C202",
      "oldbalanceOrg": 900, "newbalanceOrig": 0},
-    # large cash out that empties the account, score 3, triggers an alert
+    # large cash out that empties the account, score 4, triggers an alert
     {"txn_id": "demo-fraud-001", "type": "CASH_OUT", "amount": 350000, "nameOrig": "C103", "nameDest": "C203",
      "oldbalanceOrg": 350000, "newbalanceOrig": 0},
     # invalid: negative amount, rejected before it reaches Lambda

@@ -25,6 +25,6 @@ LIMIT 50;
 
 -- 4. which rules fire most often
 SELECT SUM(risky_type) AS risky_type, SUM(large_amount) AS large_amount,
-       SUM(orig_mismatch) AS balance_mismatch, SUM(drained_sender) AS drained_sender
+       SUM(balance_matches) AS balance_matches, SUM(drained_sender) AS drained_sender
 FROM transactions_raw
 WHERE dt >= date_format(current_date - INTERVAL '7' DAY, '%Y-%m-%d');

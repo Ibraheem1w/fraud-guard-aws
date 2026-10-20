@@ -2,7 +2,7 @@
 
 This is the cloud version of my fraud detection SQL project. Instead of scoring a table after the fact, it scores each transaction as it comes in. You send a transaction to an API, it gets a risk score and is saved, and if the score is high an alert email goes out.
 
-It is all written with the AWS CDK, so one command builds it and one command deletes it. I deployed it to my own AWS account in us-east-1 and tested it there. 45 unit tests pass, and I ran sample transactions, Athena queries, a smoke test and a load test against the live stack.
+It is all written with the AWS CDK, so one command builds it and one command deletes it. I deployed it to my own AWS account in us-east-1 and tested it there. 47 unit tests pass, and I ran sample transactions, Athena queries, a smoke test and a load test against the live stack.
 
 ## How it works
 
@@ -16,10 +16,12 @@ The score is how many of these rules fire:
 
 - the type is TRANSFER or CASH_OUT
 - the amount is 200,000 or more
-- the sender's balance didn't change by exactly the amount (cash in adds, everything else subtracts)
+- the sender's balance changed by exactly the amount (cash in adds, everything else subtracts)
 - the sender had money and ends with zero
 
 A score of 3 or more counts as flagged. These are the same rules as my SQL project and they come from one simulated dataset, so treat them as a starting point, not a trained model.
+
+The balance rule looks backwards at first. In PaySim, about 99% of fraud rows have balances that add up, while most normal rows don't, so a balance that adds up is the risk signal there. On real bank data I'd expect that to be different, which is another reason not to trust these rules outside this dataset. The first version had this rule the other way around. I flipped it after the live tests, so the sample and smoke test results I got on AWS used the old scores. The load test numbers don't depend on it.
 
 The reasons for each service choice are in docs/design-decisions.md.
 
@@ -74,7 +76,7 @@ Estimated from AWS list prices, it costs roughly $5 per million transactions, mo
 
     cdk destroy
 
-This deletes everything, including the stored data. I Set a billing alert before deploying, and you should too.
+This deletes everything, including the stored data. I set a billing alert before deploying, and you should too.
 
 ## What's missing
 
