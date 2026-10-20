@@ -21,7 +21,7 @@ The score is how many of these rules fire:
 
 A score of 3 or more counts as flagged. These are the same rules as my SQL project and they come from one simulated dataset, so treat them as a starting point, not a trained model.
 
-The balance rule looks backwards at first. In PaySim, about 99% of fraud rows have balances that add up, while most normal rows don't, so a balance that adds up is the risk signal there. On real bank data I'd expect that to be different, which is another reason not to trust these rules outside this dataset. The first version had this rule the other way around. I flipped it after the live tests, so the sample and smoke test results I got on AWS used the old scores. The load test numbers don't depend on it.
+The balance rule looks backwards at first. In PaySim, about 99% of fraud rows have balances that add up, while most normal rows don't, so a balance that adds up is the risk signal there. On real bank data I'd expect that to be different, which is another reason not to trust these rules outside this dataset. The first version had this rule the other way around. I flipped it after the live tests, so the sample and smoke test results I got on AWS used the old scores. The load test numbers don't depend on it. On the full PaySim data in MySQL, a score of 3 or more catches 98.9% of the fraud but also flags about 271,000 normal transactions, so most alerts would be false alarms. The details are in the SQL project.
 
 The reasons for each service choice are in docs/design-decisions.md.
 
