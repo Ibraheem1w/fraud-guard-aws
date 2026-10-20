@@ -74,7 +74,7 @@ Estimated from AWS list prices, it costs roughly $5 per million transactions, mo
 
     cdk destroy
 
-This deletes everything, including the stored data. I Set a billing alert before you deploying, and you should too.
+This deletes everything, including the stored data. I Set a billing alert before deploying, and you should too.
 
 ## What's missing
 
